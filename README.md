@@ -149,3 +149,14 @@ REVOKE INSERT ON SocialDB.* FROM 'admin'@'localhost';
    - **Delete User**: Delete user accounts.
    - **Add Post**: Enter content and bind it to a user ID.
    - **Delete Post**: Clean up posts dynamically.
+  
+   MySQL Workbrench :
+   <img width="1918" height="883" alt="image" src="https://github.com/user-attachments/assets/d1a6fd67-c3dc-4230-82c0-0a83a97182be" />
+
+   Output:
+   <img width="1918" height="967" alt="image" src="https://github.com/user-attachments/assets/ec9e1658-c0d0-48d9-bc7c-a11e03c78368" />
+
+   <img width="1913" height="918" alt="image" src="https://github.com/user-attachments/assets/317c7b85-6909-49ca-a878-e71023a7af89" />
+
+
+
