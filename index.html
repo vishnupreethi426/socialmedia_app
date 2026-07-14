@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SocialDB Dashboard</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #f3f6f9;
+}
+
+/* NAVBAR */
+.navbar {
+    background: #0a66c2;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar h2 {
+    margin: 0;
+}
+
+.navbar button {
+    background: white;
+    color: #0a66c2;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* CONTAINER */
+.container {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 25%;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+/* MAIN */
+.main {
+    width: 75%;
+}
+
+/* CARD */
+.card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* FORM */
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+}
+
+button {
+    padding: 8px;
+    border: none;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.btn-add { background: #28a745; color: white; }
+.btn-update { background: #ffc107; }
+.btn-delete { background: #dc3545; color: white; }
+.btn-primary { background: #0a66c2; color: white; }
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>SocialDB Dashboard</h2>
+    <button onclick="loadAll()">Refresh</button>
+</div>
+
+<div class="container">
+
+<!-- USERS -->
+<div class="sidebar">
+    <h3>Users</h3>
+
+    <input id="username" placeholder="Username">
+    <input id="email" placeholder="Email">
+
+    <button class="btn-add" onclick="addUser()">Add User</button>
+
+    <div id="users"></div>
+</div>
+
+<!-- POSTS -->
+<div class="main">
+
+    <h3>Posts Management</h3>
+
+    <textarea id="postContent" placeholder="Write post..."></textarea>
+    <input id="userId" placeholder="User ID">
+
+    <button class="btn-add" onclick="addPost()">Add Post</button>
+
+    <div id="posts"></div>
+
+</div>
+
+</div>
+
+<script>
+const API = "http://localhost:3000";
+
+/* LOAD ALL */
+function loadAll(){
+    loadUsers();
+    loadPosts();
+}
+
+/* USERS */
+function loadUsers(){
+fetch(`${API}/users`)
+.then(res => res.json())
+.then(data => {
+    document.getElementById("users").innerHTML =
+    data.map(u =>
+        `<div class="card">
+            <b>${u.username}</b><br>
+            ${u.email}<br>
+
+            <button class="btn-delete" onclick="deleteUser(${u.user_id})">Delete</button>
+        </div>`
+    ).join("");
+});
+}
+
+/* ADD USER */
+function addUser(){
+    fetch(`${API}/users`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            username: document.getElementById("username").value,
+            email: document.getElementById("email").value,
+            password: "123",
+            full_name: "User"
+        })
+    }).then(()=> loadUsers());
+}
+
+/* DELETE USER */
+function deleteUser(id){
+    fetch(`${API}/users/${id}`, {
+        method: "DELETE"
+    }).then(()=> loadUsers());
+}
+
+/* POSTS */
+function loadPosts(){
+fetch(`${API}/posts`)
+.then(res => res.json())
+.then(data => {
+    document.getElementById("posts").innerHTML =
+    data.map(p =>
+        `<div class="card">
+            <p>${p.content}</p>
+
+            <button class="btn-delete" onclick="deletePost(${p.post_id})">Delete</button>
+        </div>`
+    ).join("");
+});
+}
+
+/* ADD POST */
+function addPost(){
+    fetch(`${API}/posts`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            user_id: document.getElementById("userId").value,
+            content: document.getElementById("postContent").value
+        })
+    }).then(()=> loadPosts());
+}
+
+/* DELETE POST */
+function deletePost(id){
+    fetch(`${API}/posts/${id}`, {
+        method: "DELETE"
+    }).then(()=> loadPosts());
+}
+
+loadAll();
+</script>
+
+</body>
+</html>
